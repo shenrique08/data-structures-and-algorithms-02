@@ -16,7 +16,7 @@ void insertionSort(int vetor[], int tam)
             j--; // Move para o elemento anterior
         }
 
-        // Insere o valor armazenado ('aux') na posição correta
+        // Insere o valor armazenado em 'chave' na posição correta
         vetor[j + 1] = chave;
     }
 }
