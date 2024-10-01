@@ -3,6 +3,8 @@
 #include <string.h>
 #include "arvore_binaria.h"
 
+
+
 No* criar_arvore() {
     return NULL;
 }
@@ -19,19 +21,19 @@ No* inserir_no(No *raiz, Registro registro) {
     if (raiz == NULL) {
         return criar_no(registro);
     }
-    if (registro.cep < raiz->registro.cep) {
+    if (strcmp(registro.cep, raiz->registro.cep) < 0) {
         raiz->esquerda = inserir_no(raiz->esquerda, registro);
-    } else if (registro.cep > raiz->registro.cep) {
+    } else if (strcmp(registro.cep, raiz->registro.cep) > 0) {
         raiz->direita = inserir_no(raiz->direita, registro);
     }
     return raiz;
 }
 
-No* pesquisar_no(No *raiz, int cep) {
-    if (raiz == NULL || raiz->registro.cep == cep) {
+No* pesquisar_no(No *raiz, const char* cep) {
+    if (raiz == NULL || strcmp(raiz->registro.cep, cep) == 0) {
         return raiz;
     }
-    if (cep < raiz->registro.cep) {
+    if (strcmp(cep, raiz->registro.cep) < 0) {
         return pesquisar_no(raiz->esquerda, cep);
     } else {
         return pesquisar_no(raiz->direita, cep);
@@ -57,14 +59,14 @@ No* encontrar_maior(No *raiz) {
 void percurso_em_ordem(No *raiz) {
     if (raiz != NULL) {
         percurso_em_ordem(raiz->esquerda);
-        printf("CEP: %d - Cidade: %s - Estado: %s - Endereço: %s\n", raiz->registro.cep, raiz->registro.cidade, raiz->registro.estado, raiz->registro.endereco);
+        printf("CEP: %s - Cidade: %s - Estado: %s - Endereço: %s\n", raiz->registro.cep, raiz->registro.cidade, raiz->registro.estado, raiz->registro.endereco);
         percurso_em_ordem(raiz->direita);
     }
 }
 
 void percurso_pre_ordem(No *raiz) {
     if (raiz != NULL) {
-        printf("CEP: %d - Cidade: %s - Estado: %s - Endereço: %s\n", raiz->registro.cep, raiz->registro.cidade, raiz->registro.estado, raiz->registro.endereco);
+        printf("CEP: %s - Cidade: %s - Estado: %s - Endereço: %s\n", raiz->registro.cep, raiz->registro.cidade, raiz->registro.estado, raiz->registro.endereco);
         percurso_pre_ordem(raiz->esquerda);
         percurso_pre_ordem(raiz->direita);
     }
@@ -74,7 +76,7 @@ void percurso_pos_ordem(No *raiz) {
     if (raiz != NULL) {
         percurso_pos_ordem(raiz->esquerda);
         percurso_pos_ordem(raiz->direita);
-        printf("CEP: %d - Cidade: %s - Estado: %s - Endereço: %s\n", raiz->registro.cep, raiz->registro.cidade, raiz->registro.estado, raiz->registro.endereco);
+        printf("CEP: %s - Cidade: %s - Estado: %s - Endereço: %s\n", raiz->registro.cep, raiz->registro.cidade, raiz->registro.estado, raiz->registro.endereco);
     }
 }
 

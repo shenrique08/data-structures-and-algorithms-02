@@ -3,9 +3,11 @@
 #include <string.h>
 #include "arvore_binaria.h"
 
-// Função para carregar o arquivo completo e preencher a ABB
-void carregar_arquivo_completo(No** raiz, const char* nome_arquivo) 
-{
+
+
+
+// Função para carregar o arquivo completo em uma ABB
+void carregar_arquivo_completo(No** raiz, const char* nome_arquivo) {
     FILE *arquivo = fopen(nome_arquivo, "r");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo.\n");
@@ -16,109 +18,110 @@ void carregar_arquivo_completo(No** raiz, const char* nome_arquivo)
     while (fgets(linha, sizeof(linha), arquivo)) {
         Registro registro;
         char *token = strtok(linha, ";");
-        
-        if (token != NULL) registro.cep = atoi(token); // Lê o CEP
+
+        // Lê o CEP como string (com hífen)
+        if (token != NULL) strncpy(registro.cep, token, sizeof(registro.cep));  
         token = strtok(NULL, ";");
-        if (token != NULL) strncpy(registro.estado, token, sizeof(registro.estado)); // Lê o estado
+        // Lê o estado
+        if (token != NULL) strncpy(registro.estado, token, sizeof(registro.estado));  
         token = strtok(NULL, ";");
-        if (token != NULL) strncpy(registro.cidade, token, sizeof(registro.cidade)); // Lê a cidade
+        // Lê a cidade
+        if (token != NULL) strncpy(registro.cidade, token, sizeof(registro.cidade));  
         token = strtok(NULL, ";");
-        if (token != NULL) strncpy(registro.endereco, token, sizeof(registro.endereco)); // Lê o endereço
-        
+        // Lê o endereço
+        if (token != NULL) strncpy(registro.endereco, token, sizeof(registro.endereco));  
+
         *raiz = inserir_no(*raiz, registro);
     }
 
     fclose(arquivo);
 }
 
-// Função para carregar apenas as primeiras 20 linhas do arquivo e preencher uma ABB
-void carregar_primeiras_20_linhas(No** raiz, const char* nome_arquivo) {
+// Função para carregar as primeiras 20 linhas do arquivo em uma ABB
+void carregar_primeiras_linhas(No** raiz, const char* nome_arquivo) {
     FILE *arquivo = fopen(nome_arquivo, "r");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo.\n");
         return;
     }
-
+    
     char linha[300];
-    int linha_contador = 0;
-
-    while (linha_contador < 20 && fgets(linha, sizeof(linha), arquivo)) {
+    int contador = 0;
+    while (fgets(linha, sizeof(linha), arquivo) && contador < 20) {
         Registro registro;
         char *token = strtok(linha, ";");
-        
-        if (token != NULL) registro.cep = atoi(token); // Lê o CEP
+
+        // Lê o CEP como string (com hífen)
+        if (token != NULL) strncpy(registro.cep, token, sizeof(registro.cep));  
         token = strtok(NULL, ";");
-        if (token != NULL) strncpy(registro.estado, token, sizeof(registro.estado)); // Lê o estado
+        // Lê o estado
+        if (token != NULL) strncpy(registro.estado, token, sizeof(registro.estado));  
         token = strtok(NULL, ";");
-        if (token != NULL) strncpy(registro.cidade, token, sizeof(registro.cidade)); // Lê a cidade
+        // Lê a cidade
+        if (token != NULL) strncpy(registro.cidade, token, sizeof(registro.cidade));  
         token = strtok(NULL, ";");
-        if (token != NULL) strncpy(registro.endereco, token, sizeof(registro.endereco)); // Lê o endereço
-        
+        // Lê o endereço
+        if (token != NULL) strncpy(registro.endereco, token, sizeof(registro.endereco));  
+
         *raiz = inserir_no(*raiz, registro);
-        linha_contador++;
+        contador++;
     }
 
     fclose(arquivo);
 }
 
 int main() {
-    No* raiz_completa = criar_arvore();
-    No* raiz_primeiras_20 = criar_arvore();
+    No* arvore_completa = criar_arvore();
+    No* arvore_20_linhas = criar_arvore();
+    
+    // 1. Leia o arquivo texto completo e preencha uma ABB
+    carregar_arquivo_completo(&arvore_completa, "cepPontoEVirgula.txt");
 
-    // Carrega o arquivo completo para a primeira árvore
-    printf("Carregando o arquivo completo...\n");
-    carregar_arquivo_completo(&raiz_completa, "cepPontoEVirgula.txt");
-
-    // Parte 1: Apresenta informações sobre a ABB completa
-    printf("\n--- Árvore com o arquivo completo ---\n");
-
-    // Pesquisa por alguns CEPs de exemplo
-    int ceps_para_pesquisa[] = {12345678, 87654321, 11223344, 44332211, 33445566};
-    int num_ceps = sizeof(ceps_para_pesquisa) / sizeof(ceps_para_pesquisa[0]);
-
-    printf("Realizando pesquisas por CEPs...\n");
+    // Exemplo de pesquisa por CEPs (utilizando CEPs formatados com hífen)
+    const char* ceps_para_pesquisar[] = {"12345-678", "87654-321", "11223-344", "44332-211", "33445-566"};
+    int num_ceps = sizeof(ceps_para_pesquisar) / sizeof(ceps_para_pesquisar[0]);
+    printf("== Pesquisa de CEPs na ABB Completa ==\n");
     for (int i = 0; i < num_ceps; i++) {
-        No* encontrado = pesquisar_no(raiz_completa, ceps_para_pesquisa[i]);
+        No* encontrado = pesquisar_no(arvore_completa, ceps_para_pesquisar[i]);
         if (encontrado) {
-            printf("CEP encontrado: %d - %s - %s - %s\n", encontrado->registro.cep, encontrado->registro.cidade, encontrado->registro.estado, encontrado->registro.endereco);
+            printf("CEP encontrado: %s - %s - %s - %s\n", encontrado->registro.cep, encontrado->registro.cidade, encontrado->registro.estado, encontrado->registro.endereco);
         } else {
-            printf("CEP %d não encontrado.\n", ceps_para_pesquisa[i]);
+            printf("CEP %s não encontrado.\n", ceps_para_pesquisar[i]);
         }
     }
 
-    // Exibe a altura, maior e menor valor
-    printf("\nAltura da ABB: %d\n", calcular_altura(raiz_completa));
+    // Exibe altura, maior e menor valor da árvore completa
+    printf("\n== Informações da ABB Completa ==\n");
+    printf("Altura da ABB: %d\n", calcular_altura(arvore_completa));
     
-    No* menor_completa = encontrar_menor(raiz_completa);
-    if (menor_completa) {
-        printf("Menor CEP: %d - %s - %s - %s\n", menor_completa->registro.cep, menor_completa->registro.cidade, menor_completa->registro.estado, menor_completa->registro.endereco);
+    No* menor = encontrar_menor(arvore_completa);
+    if (menor) {
+        printf("Menor CEP: %s - %s - %s - %s\n", menor->registro.cep, menor->registro.cidade, menor->registro.estado, menor->registro.endereco);
+    }
+    
+    No* maior = encontrar_maior(arvore_completa);
+    if (maior) {
+        printf("Maior CEP: %s - %s - %s - %s\n", maior->registro.cep, maior->registro.cidade, maior->registro.estado, maior->registro.endereco);
     }
 
-    No* maior_completa = encontrar_maior(raiz_completa);
-    if (maior_completa) {
-        printf("Maior CEP: %d - %s - %s - %s\n", maior_completa->registro.cep, maior_completa->registro.cidade, maior_completa->registro.estado, maior_completa->registro.endereco);
-    }
+    // 2. Leia as primeiras 20 linhas do arquivo texto e preencha uma nova ABB
+    carregar_primeiras_linhas(&arvore_20_linhas, "cepPontoEVirgula.txt");
 
-    // Carrega apenas as primeiras 20 linhas para a segunda árvore
-    printf("\nCarregando as primeiras 20 linhas do arquivo...\n");
-    carregar_primeiras_20_linhas(&raiz_primeiras_20, "cepPontoEVirgula.txt");
+    // Exibir os CEPs considerando os percursos central, pré-fixado e pós-fixado
+    printf("\n== Percursos na ABB das Primeiras 20 Linhas ==\n");
 
-    // Parte 2: Apresenta informações sobre a ABB com as primeiras 20 linhas
-    printf("\n--- Árvore com as primeiras 20 linhas ---\n");
+    printf("\nPercurso Central:\n");
+    percurso_em_ordem(arvore_20_linhas);
 
-    // Exibe os percursos da ABB de 20 linhas
-    printf("\nPercurso em Ordem:\n");
-    percurso_em_ordem(raiz_primeiras_20);
+    printf("\nPercurso Pré-Fixado:\n");
+    percurso_pre_ordem(arvore_20_linhas);
 
-    printf("\nPercurso Pré-Ordem:\n");
-    percurso_pre_ordem(raiz_primeiras_20);
-
-    printf("\nPercurso Pós-Ordem:\n");
-    percurso_pos_ordem(raiz_primeiras_20);
+    printf("\nPercurso Pós-Fixado:\n");
+    percurso_pos_ordem(arvore_20_linhas);
 
     // Libera a memória das árvores
-    liberar_arvore(raiz_completa);
-    liberar_arvore(raiz_primeiras_20);
+    liberar_arvore(arvore_completa);
+    liberar_arvore(arvore_20_linhas);
 
     return 0;
 }

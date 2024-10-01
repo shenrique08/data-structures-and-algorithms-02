@@ -2,7 +2,7 @@
 #define ARVORE_BINARIA_H
 
 typedef struct Registro {
-    int cep;
+    char cep[10]; 
     char estado[3];
     char cidade[100];
     char endereco[200];
@@ -14,11 +14,12 @@ typedef struct No {
     struct No *direita;
 } No;
 
+
 // Funções da Árvore Binária de Pesquisa
 No* criar_arvore();
 No* inserir_no(No *raiz, Registro registro);
-No* remover_no(No *raiz, int cep);
-No* pesquisar_no(No *raiz, int cep);
+No* remover_no(No *raiz, const char* cep);
+No* pesquisar_no(No *raiz, const char* cep);
 No* encontrar_menor(No *raiz);
 No* encontrar_maior(No *raiz);
 void percurso_em_ordem(No *raiz);
