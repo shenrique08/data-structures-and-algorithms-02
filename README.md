@@ -1,1 +1,1 @@
-# data-structures-and-algorithms-02
+# Practices of Graph, Tree and some other data structures
