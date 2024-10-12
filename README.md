@@ -1,1 +1,1 @@
-# Practices of Graph, Tree and some other data structures
+# Practices of Graph, Tree, Sorting Algorithms and some other data structures
