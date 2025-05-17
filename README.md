@@ -5,7 +5,7 @@ Repository for academic/practical implementations of **sorting algorithms**, **g
 ---
 
 ## 🗂️ Repository Structure
-.
+
 ├── 1-sorting-algorithms/ # Selection sort and other sorting algorithms
 
 ├── 2-Graph/ # Graph theory implementations
